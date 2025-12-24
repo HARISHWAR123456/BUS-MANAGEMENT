@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,14 +28,18 @@ public class BusModel {
     @Column(name="bus_name")
     private String busName;
 
+    @Enumerated(EnumType.STRING)
     @Column (name="ac_type")
     private AcType acType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="bus_type")
     private BusType busType;
 
     @Column(name="total_seats")
     private Long totalSeats;
 
+    @OneToMany(mappedBy = "bus")
+    private List<BusSeatModel> seats;
 
 }

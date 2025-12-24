@@ -1,7 +1,6 @@
 package com.example.BUS_BOOKING.Model;
 
 import com.example.BUS_BOOKING.enums.Gender;
-import com.example.BUS_BOOKING.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,27 +9,25 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="users")
-public class UserModel {
+@Table(name = "booking_passenger")
+public class BookingPassengerModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id")
-    private Long userId;
+    @Column(name = "passenger_id")
+    private Long passengerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id", nullable = false)
+    private BookingModel booking;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name="email")
-    private String email;
-
-    @Column(name="password")
-    private String password;
+    @Column(name = "age", nullable = false)
+    private Integer age;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="gender")
+    @Column(name = "gender", nullable = false)
     private Gender gender;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name="role")
-    private Role role;
 }
