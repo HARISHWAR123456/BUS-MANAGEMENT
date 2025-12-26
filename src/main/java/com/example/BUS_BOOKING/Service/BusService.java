@@ -1,6 +1,7 @@
 package com.example.BUS_BOOKING.Service;
 
 import com.example.BUS_BOOKING.Exception.BusAlreadyExistsException;
+import com.example.BUS_BOOKING.Exception.ResourceNotFoundException;
 import com.example.BUS_BOOKING.Model.BusModel;
 import com.example.BUS_BOOKING.Repository.BusRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,5 +28,17 @@ public class BusService {
         }
         busRepository.save(bus);
 
+    }
+
+    public List<BusModel> getAllBus() {
+
+        List<BusModel> bus=busRepository.findAll();
+
+        if(bus.isEmpty()){
+            logger.info("No buses Found");
+            throw new ResourceNotFoundException("No buses available");
+
+        }
+        return bus;
     }
 }

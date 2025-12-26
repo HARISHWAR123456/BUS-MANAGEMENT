@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -32,6 +33,16 @@ public class BusController {
           return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-//    @PutMapping("/getAll-bus")
-//    public  ResponseEntity<>
+    @GetMapping("/getAll-bus")
+    public  ResponseEntity<Map<String,Object>> getAllBus(){
+      List<BusModel> allBus=busService.getAllBus();
+
+      logger.info("Retrived all bus");
+      Map<String,Object> response=new HashMap<>();
+      response.put("status","SUCCESS");
+      response.put("message","Bus Fetched Successfully");
+      response.put("data",allBus);
+       return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
 }
