@@ -1,5 +1,6 @@
 package com.example.BUS_BOOKING.Service;
 
+import com.example.BUS_BOOKING.Exception.CustomException;
 import com.example.BUS_BOOKING.Model.UserModel;
 import com.example.BUS_BOOKING.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,17 +17,15 @@ public class UserService {
     @Autowired
     private final UserRepository userRepository;
 
-    public String createUser(UserModel user) {
+    public void createUser(UserModel user) {
         try{
-            logger.info("Entered CreateUser Service");
            boolean  userData =  userRepository.existsByEmail(user.getEmail());
            if(!userData){
                userRepository.save(user);
-               return "User Created SuccessFully";
            }else{
-               throw new Exception("Email already Exists");
+               logger.error("Email already exists");
+               throw new CustomException("Email already Exists");
            }
-
         }catch (Exception e){
            throw new RuntimeException(e.getMessage());
         }

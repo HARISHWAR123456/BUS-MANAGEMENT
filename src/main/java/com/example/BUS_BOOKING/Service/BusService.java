@@ -1,16 +1,20 @@
 package com.example.BUS_BOOKING.Service;
 
-import com.example.BUS_BOOKING.Exception.BusAlreadyExistsException;
+import com.example.BUS_BOOKING.Exception.CustomException;
 import com.example.BUS_BOOKING.Exception.ResourceNotFoundException;
+import com.example.BUS_BOOKING.Model.BusFareModel;
 import com.example.BUS_BOOKING.Model.BusModel;
+import com.example.BUS_BOOKING.Model.DTO.CreateBus;
+import com.example.BUS_BOOKING.Model.DTO.FareRequest;
+import com.example.BUS_BOOKING.Repository.BusFareRepository;
 import com.example.BUS_BOOKING.Repository.BusRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,27 +22,57 @@ public class BusService {
     private static Logger logger = LoggerFactory.getLogger(BusService.class);
 
     private final BusRepository busRepository;
+    private final BusFareRepository busFareRepository;
 
-    public void createBus(BusModel bus) {
+    public void createBus(CreateBus bus) {
 
         boolean busExist = busRepository.existsByBusNumber(bus.getBusNumber());
         if (busExist) {
             logger.error("Bus Already Exists Give New BusNumber");
-            throw new BusAlreadyExistsException("Bus Already Exists");
+            throw new CustomException("Bus Already Exists");
         }
-        busRepository.save(bus);
+        BusModel busModel = new BusModel();
+        busModel.setBusName(bus.getBusName());
+        busModel.setBusNumber(bus.getBusNumber());
+        busModel.setBusType(bus.getBusType());
+        busModel.setTotalSeats(bus.getTotalSeats());
+        busModel.setAcType(bus.getAcType());
 
+        BusModel savedBus = busRepository.save(busModel);
+
+        for (FareRequest fareReq : bus.getFares()) {
+
+            BusFareModel fare = new BusFareModel();
+            fare.setBus(savedBus);
+            fare.setSeatType(fareReq.getSeatType());
+            fare.setFareAmount(fareReq.getFareAmount());
+            busFareRepository.save(fare);
+        }
     }
 
     public List<BusModel> getAllBus() {
-
-        List<BusModel> bus=busRepository.findAll();
-
-        if(bus.isEmpty()){
-            logger.info("No buses Found");
-            throw new ResourceNotFoundException("No buses available");
-
+        List<BusModel> bus = busRepository.findAll();
+        if (bus.isEmpty()) {
+            logger.error("No buses Found");
+            throw new CustomException("No buses available");
         }
         return bus;
+    }
+
+    public BusModel updateBus(BusModel bus, Long busId) {
+
+        BusModel existingBus = busRepository.findById(busId).orElseThrow(() -> new CustomException("Bus Not Found"));
+
+        if (bus.getBusNumber() != null) {
+            existingBus.setBusNumber(bus.getBusNumber());
+        }
+        if (bus.getBusName() != null) {
+            existingBus.setBusName(bus.getBusName());
+        }
+        if (bus.getAcType() != null) {
+            existingBus.setAcType(bus.getAcType());
+        }
+
+        return busRepository.save(existingBus);
     }
 }

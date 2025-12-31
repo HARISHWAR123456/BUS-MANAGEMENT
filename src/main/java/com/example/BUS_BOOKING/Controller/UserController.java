@@ -1,5 +1,7 @@
 package com.example.BUS_BOOKING.Controller;
 
+import com.example.BUS_BOOKING.Exception.CustomException;
+import com.example.BUS_BOOKING.Model.Response;
 import com.example.BUS_BOOKING.Model.UserModel;
 import com.example.BUS_BOOKING.Service.UserService;
 import org.slf4j.Logger;
@@ -12,33 +14,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-
-
 @RestController
 @RequestMapping("/user")
-public class userController {
+public class UserController {
 
     @Autowired
     private UserService userService;
 
-    private static final Logger logger = LoggerFactory.getLogger(userController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/create-user")
-    public ResponseEntity<Map<String,Object>> createUser(@RequestBody UserModel user)  {
-        Map<String,Object> response= new HashMap<>();
+    public ResponseEntity<Response> createUser(@RequestBody UserModel user)  {
         try{
-            logger.info("Entered Create User Contoller");
-            String serviceResposne = userService.createUser(user);
-            response.put("status" , "Success");
-            response.put("message" ,  serviceResposne);
+            userService.createUser(user);
+            logger.info("User Created");
+            Response response=new Response("SUCCESS","User Created");
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        }catch(Exception e){
-            response.put("status" , "Error");
-            response.put("message" ,  e.getMessage());
+        }catch(CustomException e){
+            Response response=new Response("ERROR",e.getMessage());
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-
+        }catch(Exception e){
+            Response response=new Response("ERROR",e.getMessage());
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
     }
