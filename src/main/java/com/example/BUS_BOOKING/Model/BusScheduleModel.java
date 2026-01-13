@@ -1,10 +1,13 @@
 package com.example.BUS_BOOKING.Model;
 
 import com.example.BUS_BOOKING.enums.BusScheduleStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+@Data
 @Entity
 @Table(name="bus_schedule")
 public class BusScheduleModel {
@@ -14,11 +17,9 @@ public class BusScheduleModel {
     @Column(name = "schedule_id")
     private Long scheduleId;
 
-
-    @ManyToOne(fetch =FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn( name="bus_id" , nullable = false)
     private BusModel bus;
-
 
     @Column(name = "source", nullable = false)
     private String source;

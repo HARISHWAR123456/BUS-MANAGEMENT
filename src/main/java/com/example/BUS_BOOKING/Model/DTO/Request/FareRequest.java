@@ -1,4 +1,4 @@
-package com.example.BUS_BOOKING.Model.DTO;
+package com.example.BUS_BOOKING.Model.DTO.Request;
 
 import com.example.BUS_BOOKING.enums.SeatType;
 import lombok.Data;

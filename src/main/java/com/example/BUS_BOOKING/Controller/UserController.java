@@ -1,7 +1,7 @@
 package com.example.BUS_BOOKING.Controller;
 
 import com.example.BUS_BOOKING.Exception.CustomException;
-import com.example.BUS_BOOKING.Model.Response;
+import com.example.BUS_BOOKING.Model.DTO.Response.ApiResponseModel;
 import com.example.BUS_BOOKING.Model.UserModel;
 import com.example.BUS_BOOKING.Service.UserService;
 import org.slf4j.Logger;
@@ -24,17 +24,17 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/create-user")
-    public ResponseEntity<Response> createUser(@RequestBody UserModel user)  {
+    public ResponseEntity<ApiResponseModel> createUser(@RequestBody UserModel user)  {
         try{
             userService.createUser(user);
             logger.info("User Created");
-            Response response=new Response("SUCCESS","User Created");
+            ApiResponseModel response=new ApiResponseModel("SUCCESS","User Created");
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }catch(CustomException e){
-            Response response=new Response("ERROR",e.getMessage());
+            ApiResponseModel response=new ApiResponseModel("ERROR",e.getMessage());
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }catch(Exception e){
-            Response response=new Response("ERROR",e.getMessage());
+            ApiResponseModel response=new ApiResponseModel("ERROR",e.getMessage());
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 

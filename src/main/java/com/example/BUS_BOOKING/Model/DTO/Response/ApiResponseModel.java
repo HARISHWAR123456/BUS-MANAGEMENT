@@ -1,4 +1,4 @@
-package com.example.BUS_BOOKING.Model;
+package com.example.BUS_BOOKING.Model.DTO.Response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -10,13 +10,13 @@ import lombok.*;
 @Getter
 @Setter
 
-public class Response {
-    private String status;
+public class ApiResponseModel {
+    private  String status;
     private  String message;
     private  Object data;
 
 
-    public Response(String status,String message){
+    public ApiResponseModel(String status, String message){
         this.status=status;
         this.message=message;
     }

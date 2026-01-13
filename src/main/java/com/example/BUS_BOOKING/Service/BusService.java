@@ -1,11 +1,10 @@
 package com.example.BUS_BOOKING.Service;
 
 import com.example.BUS_BOOKING.Exception.CustomException;
-import com.example.BUS_BOOKING.Exception.ResourceNotFoundException;
 import com.example.BUS_BOOKING.Model.BusFareModel;
 import com.example.BUS_BOOKING.Model.BusModel;
-import com.example.BUS_BOOKING.Model.DTO.CreateBus;
-import com.example.BUS_BOOKING.Model.DTO.FareRequest;
+import com.example.BUS_BOOKING.Model.DTO.Request.CreateBus;
+import com.example.BUS_BOOKING.Model.DTO.Request.FareRequest;
 import com.example.BUS_BOOKING.Repository.BusFareRepository;
 import com.example.BUS_BOOKING.Repository.BusRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +62,10 @@ public class BusService {
         BusModel existingBus = busRepository.findById(busId).orElseThrow(() -> new CustomException("Bus Not Found"));
 
         if (bus.getBusNumber() != null) {
+            boolean  existingBusNumber =busRepository.existsByBusNumber(bus.getBusNumber());
+            if(existingBusNumber){
+                throw new CustomException("Bus Already Exists");
+            }
             existingBus.setBusNumber(bus.getBusNumber());
         }
         if (bus.getBusName() != null) {
@@ -71,6 +73,12 @@ public class BusService {
         }
         if (bus.getAcType() != null) {
             existingBus.setAcType(bus.getAcType());
+        }
+        if(bus.getBusType()!=null){
+            existingBus.setBusType(bus.getBusType());
+        }
+        if(bus.getTotalSeats()!=null){
+            existingBus.setTotalSeats(bus.getTotalSeats());
         }
 
         return busRepository.save(existingBus);
